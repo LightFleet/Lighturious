@@ -1,7 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\TestController;
+use App\Models\Product;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\LoginController;
 
 /*
 |--------------------------------------------------------------------------
@@ -12,19 +14,17 @@ use App\Http\Controllers\TestController;
 | routes are loaded by the RouteServiceProvider within a group which
 | contains the "web" middleware group. Now create something great!
 |
-*
+*/
 
-Route::get( '/', function ()
-{
+Route::get('/', function () {
+    return view('welcome');
+});
 
-    $obj1 = new class {
-        public $test = '123';
-    };
-    dd($obj1, clone $obj1);
+Route::get('/login', [LoginController::class, 'index'])->name('login');
+Route::get('/products', [ProductController::class, 'index'])->middleware(['userAuth']);
+Route::get('/products/{product}', [ProductController::class, 'show'])->middleware(['userAuth']);
 
-    return view( 'welcome' );
-} );
+Route::get('/import', function (){
+    return view('products.import');
+})->middleware(['userAuth']);
 
-Route::get( '/test', [ TestController::class, 'index' ] );
-
-Route::get( '/hello', [ \App\Http\Controllers\SimpleController::class, 'index' ] );
